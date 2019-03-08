@@ -8,18 +8,106 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r working directory & loading data, echo=TRUE}
+# setting working directory
+dir = '/Users/aline/Desktop'
+setwd(dir)
+
+# loading data
+df <- read.csv('activity.csv', header = T, sep=',')
+
+# 
+df$date <- as.Date(df$date)
+
+```
 
 
 ## What is mean total number of steps taken per day?
+```{r plot and report mean total number of steps}
 
+
+# make a summary table for the plot
+sum.table <- tapply(df$steps, df$date, sum, na.rm =T)
+
+
+# load ggplot
+library(ggplot2)
+
+# plot steps per day
+qplot(sum.table, xlab = 'Total steps per  day', ylab= 'Frequency using binwidth 1000', binwidth = 1000)
+```
+
+```{r mean}
+
+#print mean
+meansteps <- mean(sum.table)
+
+#print median
+mediansteps <- median(sum.table)
+
+```
+
+* Mean: `r meansteps`   
+* Median: `r mediansteps`  
 
 
 ## What is the average daily activity pattern?
 
+```{r average}
+# summary dataframe
+averageStepsPerBlock <- aggregate(x=list(meansteps=df$steps), by=list(interval=df$interval), FUN= mean,na.rm= T)
+```
 
+Make plot for average number of steps per 5-minute interval
+```{r plot interval}
+
+# make plot
+ggplot(averageStepsPerBlock, aes(x=interval, y=meansteps)) + geom_line() + xlab('5 minute intervals')+ ylab('Average number of steps')
+
+```
+Let's evaluate which interval across all days cotains the maximum number of steps.
+
+```{r }
+maxsteps <- which.max(averageStepsPerBlock$meansteps)
+intervalmaxsteps <- gsub("([0-9]{1,2})([0-9]{2})","\\1:\\2", averageStepsPerBlock[maxsteps,'interval'])
+
+```
+
+* Most steps as: `r intervalmaxsteps`
 
 ## Imputing missing values
+Calculate and report the total number of NA's
+```{r NA's}
+nas <- length(which(is.na(df$steps)))
+```
 
+* Number of NA's: `r nas` 
+
+
+```{r fill in na's, message = FALSE}
+# load mice library
+library(Hmisc)
+# make dataset where na's filled in
+dfna <- df
+#fill in mean steps where na
+dfna$steps <- impute(df$steps, fun=mean)
+```
+
+Plot total number of steps taken each day
+```{r}
+stepsbydaynona<- tapply(dfna$steps, dfna$date, sum)
+qplot(stepsbydaynona, xlab='Total steps per day (NA\'s filled in)', ylab='Frequency using binwidth 1000', binwidth=1000)
+```
+Print mean and median number of steps taken per day.
+```{r}
+meanna <- mean(stepsbydaynona)
+medianna <- median(stepsbydaynona)
+
+```
+
+* Mean (NA's filled in): `r meanna`
+* Median (NA's filled in): `r medianna`  
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{}
