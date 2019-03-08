@@ -26,7 +26,7 @@ df$date <- as.Date(df$date)
 
 
 ## What is mean total number of steps taken per day?
-```{r plot and report mean total number of steps}
+```{r hist}
 
 
 # make a summary table for the plot
@@ -63,7 +63,7 @@ averageStepsPerBlock <- aggregate(x=list(meansteps=df$steps), by=list(interval=d
 ```
 
 Make plot for average number of steps per 5-minute interval
-```{r plot interval}
+```{r plotinterval}
 
 # make plot
 
