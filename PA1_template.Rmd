@@ -38,6 +38,7 @@ library(ggplot2)
 
 # plot steps per day
 qplot(sum.table, xlab = 'Total steps per  day', ylab= 'Frequency using binwidth 1000', binwidth = 1000)
+
 ```
 
 ```{r mean}
@@ -65,9 +66,11 @@ Make plot for average number of steps per 5-minute interval
 ```{r plot interval}
 
 # make plot
+
 ggplot(averageStepsPerBlock, aes(x=interval, y=meansteps)) + geom_line() + xlab('5 minute intervals')+ ylab('Average number of steps')
 
 ```
+
 Let's evaluate which interval across all days cotains the maximum number of steps.
 
 ```{r }
