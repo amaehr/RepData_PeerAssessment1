@@ -1,6 +1,6 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
-output: 
+output:
   html_document:
     keep_md: true
 ---
@@ -16,7 +16,7 @@ setwd(dir)
 # loading data
 df <- read.csv('activity.csv', header = T, sep=',')
 
-# 
+#
 df$date <- as.Date(df$date)
 
 ```
@@ -81,7 +81,7 @@ Calculate and report the total number of NA's
 nas <- length(which(is.na(df$steps)))
 ```
 
-* Number of NA's: `r nas` 
+* Number of NA's: `r nas`
 
 
 ```{r fill in na's, message = FALSE}
@@ -110,4 +110,17 @@ medianna <- median(stepsbydaynona)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{}
+```{r differences}
+# make a new factorial variable indicating weekdays and weekends
+dfna$days <-  ifelse(as.POSIXlt(dfna$date)$wday %in% c(0,6), 'weekend', 'weekday')
+dfna$days <- as.factor(dfna$days)
+
+# make panel plot, 1. get summary data, then plot
+meandfna <- aggregate(steps ~ interval + days, data=dfna, mean)
+ggplot(meandfna, aes(interval, steps)) + 
+    geom_line() + 
+    facet_grid(days ~ .) +
+    xlab("5-minute interval") + 
+    ylab("Average number of steps")
+
+```
